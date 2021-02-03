@@ -5,17 +5,17 @@ namespace MyProject.Core.ViewModels
     public record UserIdentity
     {
         /// <summary>
-        /// 사용자 ID
+        /// 사용자 식별자
         /// </summary>
         public int Id { get; init; }
 
         /// <summary>
-        /// 유저 본명
+        /// 사용자가 입력하는 ID
         /// </summary>
         public string Username { get; init; }
 
         /// <summary>
-        /// 유저 본명
+        /// 사용자 본명
         /// </summary>
         public string RealName { get; init; }
 

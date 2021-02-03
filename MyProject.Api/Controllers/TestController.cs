@@ -19,7 +19,7 @@ namespace MyProject.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Login(TestQuery query)
+        public async Task<IActionResult> Test(TestQuery query)
         {
             query.GetUserIdentity(this);
             var result = await _mediator.Send(query);
