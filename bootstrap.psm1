@@ -19,8 +19,14 @@ function Set-ProjectName {
     }
 
     $items = Get-ChildItem -Path "*" -Recurse -File;
+    $secretRegex = [System.Text.RegularExpressions.Regex]::New("< *UserSecretsId *>([0-9a-zA-Z\-]+)< */ *UserSecretsId *>");
     foreach ($item in $items) {
         $content = Get-Content -Path $item;
+        $content = $content.Replace($oldProjectName, $projectName);
+        $match = $secretRegex.Match($content);
+        if ($match.Success) {
+            $content = $content.Replace($match.Groups[1], [System.Guid]::NewGuid().ToString());
+        }
         $content.Replace($oldProjectName, $projectName) | Set-Content -Path $item;
     }
 }
