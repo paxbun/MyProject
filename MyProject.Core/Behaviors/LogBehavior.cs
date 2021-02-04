@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,26 +33,28 @@ namespace MyProject.Core.Behaviors
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (request == null)
-                throw new InvalidRequestTypeException();
-
-            ILogger logger = _factory.CreateLogger(request.GetType().Name);
-            EventId eventId = GetNextEventId();
-
-            try
+            if (request is ICoreRequestBase coreRequest)
             {
-                var response = await next();
-                logger.LogInformation(eventId, "Request: {0}", request);
-                logger.LogInformation(eventId, "Response: {0}", response);
-                return response;
+                ILogger logger = _factory.CreateLogger(request.GetType().Name);
+                EventId eventId = GetNextEventId();
+
+                try
+                {
+                    var response = await next();
+                    logger.LogInformation(eventId, "Request: {0}", coreRequest);
+                    logger.LogInformation(eventId, "Response: {0}", response);
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(eventId, "Request: {0}", coreRequest);
+                    logger.LogError(eventId, "Exception: {0}", ex);
+                    return (TResponse)coreRequest.MakeDefaultFailure();
+                }
             }
-            catch (Exception ex)
+            else
             {
-                logger.LogError(eventId, "Request: {0}", request);
-                logger.LogError(eventId, "Exception: {0}", ex);
-                var method = typeof(TResponse).GetMethod("MakeFailure");
-                var param = method.GetParameters().Select(param => param.DefaultValue).ToArray();
-                return (TResponse)typeof(TResponse).GetMethod("MakeFailure").Invoke(null, param);
+                throw new InvalidRequestTypeException();
             }
         }
     }

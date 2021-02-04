@@ -42,7 +42,7 @@ namespace MyProject.Api
         }
 
         public static void GetUserIdentity<TController>(
-            this IIdentityHolder request, TController controller)
+            this ICoreRequestBase request, TController controller)
             where TController : ControllerBase
         {
             request.Identity =

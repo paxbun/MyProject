@@ -5,12 +5,17 @@ using System;
 
 namespace MyProject.Core
 {
-    public interface IIdentityHolder
+    public interface ICoreRequestBase
     {
         /// <summary>
         /// 현재 로그인 중인 사용자 정보
         /// </summary>
         public UserIdentity Identity { get; set; }
+
+        /// <summary>
+        /// 액션이 처리하지 않은 예외가 발생했을 때 반환해야하는 <c>Result</c> 또는 <c>DataResult</c> 객체를 반환하는 함수
+        /// </summary>
+        public object MakeDefaultFailure();
     }
 
     /// <summary>
@@ -19,10 +24,15 @@ namespace MyProject.Core
     /// <typeparam name="TReason">실패시 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
     public interface ICoreRequest<TReason, TResultData>
-        : IRequest<Result<TReason, TResultData>>, IIdentityHolder
+        : IRequest<Result<TReason, TResultData>>, ICoreRequestBase
         where TReason : struct
         where TResultData : class
-    { }
+    {
+        object ICoreRequestBase.MakeDefaultFailure()
+        {
+            return Result<TReason, TResultData>.MakeFailure();
+        }
+    }
 
     public interface ICoreRequestHandler<Command, TReason, TResultData>
         : IRequestHandler<Command, Result<TReason, TResultData>>
@@ -36,9 +46,14 @@ namespace MyProject.Core
     /// </summary>
     /// <typeparam name="TReason">실패시 이유를 나타내는 열거형</typeparam>
     public interface ICoreRequest<TReason>
-        : IRequest<Result<TReason>>, IIdentityHolder
+        : IRequest<Result<TReason>>, ICoreRequestBase
         where TReason : struct
-    { }
+    {
+        object ICoreRequestBase.MakeDefaultFailure()
+        {
+            return Result<TReason>.MakeFailure();
+        }
+    }
 
     public interface ICoreRequestHandler<Command, TReason>
         : IRequestHandler<Command, Result<TReason>>
@@ -51,9 +66,14 @@ namespace MyProject.Core
     /// </summary>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
     public interface ICoreDataRequest<TResultData>
-        : IRequest<DataResult<TResultData>>, IIdentityHolder
+        : IRequest<DataResult<TResultData>>, ICoreRequestBase
         where TResultData : class
-    { }
+    {
+        object ICoreRequestBase.MakeDefaultFailure()
+        {
+            return DataResult<TResultData>.MakeFailure();
+        }
+    }
 
     public interface ICoreDataRequestHandler<Command, TResultData>
         : IRequestHandler<Command, DataResult<TResultData>>
