@@ -7,32 +7,9 @@ namespace MyProject.Api
 {
     public static class Extensions
     {
-        public static IActionResult ToActionResult<TReason, TResultData, TController>(
-            this Result<TReason, TResultData> result, TController controller)
-            where TReason : struct
-            where TResultData : class
-            where TController : ControllerBase
-        {
-            if (result.Success)
-                return controller.Ok(result);
-            else
-                return controller.Conflict(result);
-        }
-
-        public static IActionResult ToActionResult<TReason, TController>(
-            this Result<TReason> result, TController controller)
-            where TReason : struct
-            where TController : ControllerBase
-        {
-            if (result.Success)
-                return controller.Ok(result);
-            else
-                return controller.Conflict(result);
-        }
-
-        public static IActionResult ToActionResult<TResultData, TController>(
-            this DataResult<TResultData> result, TController controller)
-            where TResultData : class
+        public static IActionResult ToActionResult<TResult, TController>(
+            this TResult result, TController controller)
+            where TResult : IResultBase
             where TController : ControllerBase
         {
             if (result.Success)

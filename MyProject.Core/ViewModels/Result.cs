@@ -8,11 +8,22 @@ using System.Linq;
 namespace MyProject.Core.ViewModels
 {
     /// <summary>
+    /// 연산 결과를 나타내는 객체가 구현하는 인터페이스
+    /// </summary>
+    public interface IResultBase
+    {
+        /// <summary>
+        /// 성공 여부
+        /// </summary>
+        public bool Success { get; init; }
+    }
+
+    /// <summary>
     /// 결과를 나타내는 클래스
     /// </summary>
     /// <typeparam name="TReason">실패시 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
-    public record Result<TReason, TResultData>
+    public record Result<TReason, TResultData> : IResultBase
         where TReason : struct
         where TResultData : class
     {
@@ -80,7 +91,7 @@ namespace MyProject.Core.ViewModels
     /// <typeparam name="TBatchReason">묶음 연산 자체가 실패한 경우 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TReason">개별 연산 자체가 실패한 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
-    public record BatchResult<TBatchReason, TReason, TResultData>
+    public record BatchResult<TBatchReason, TReason, TResultData> : IResultBase
         where TBatchReason : struct
         where TReason : struct
         where TResultData : class
@@ -143,7 +154,7 @@ namespace MyProject.Core.ViewModels
     /// 결과를 나타내는 클래스
     /// </summary>
     /// <typeparam name="TReason">실패시 이유를 나타내는 열거형</typeparam>
-    public record Result<TReason>
+    public record Result<TReason> : IResultBase
         where TReason : struct
     {
         public static Result<TReason> MakeSuccess()
@@ -180,7 +191,7 @@ namespace MyProject.Core.ViewModels
     /// </summary>
     /// <typeparam name="TBatchReason">묶음 연산 자체가 실패한 경우 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TReason">개별 연산 자체가 실패한 이유를 나타내는 열거형</typeparam>
-    public record BatchResult<TBatchReason, TReason>
+    public record BatchResult<TBatchReason, TReason> : IResultBase
         where TBatchReason : struct
         where TReason : struct
     {
@@ -219,7 +230,7 @@ namespace MyProject.Core.ViewModels
     /// 실패시 이유를 나타내는 경우가 없는 결과를 나타내는 클래스
     /// </summary>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
-    public record DataResult<TResultData>
+    public record DataResult<TResultData> : IResultBase
         where TResultData : class
     {
         public static DataResult<TResultData> MakeSuccess(TResultData? data = default)
@@ -276,7 +287,7 @@ namespace MyProject.Core.ViewModels
     /// </summary>
     /// <typeparam name="TBatchReason">묶음 연산 자체가 실패한 경우 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
-    public record BatchDataResult<TBatchReason, TResultData>
+    public record BatchDataResult<TBatchReason, TResultData> : IResultBase
         where TBatchReason : struct
         where TResultData : class
     {

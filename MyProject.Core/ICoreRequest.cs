@@ -2,6 +2,7 @@
 using MyProject.Models;
 using MediatR;
 using System;
+using System.Collections.Generic;
 
 namespace MyProject.Core
 {
@@ -34,9 +35,34 @@ namespace MyProject.Core
         }
     }
 
-    public interface ICoreRequestHandler<Command, TReason, TResultData>
-        : IRequestHandler<Command, Result<TReason, TResultData>>
-        where Command : ICoreRequest<TReason, TResultData>
+    public interface ICoreRequestHandler<TCommand, TReason, TResultData>
+        : IRequestHandler<TCommand, Result<TReason, TResultData>>
+        where TCommand : ICoreRequest<TReason, TResultData>
+        where TReason : struct
+        where TResultData : class
+    { }
+
+    /// <summary>
+    /// MyProject.Core에 들어있는 묶음 연산 request가 구현하는 인터페이스
+    /// </summary>
+    /// <typeparam name="TReason">실패시 이유를 나타내는 열거형</typeparam>
+    /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
+    public interface ICoreBatchRequest<TBatchReason, TReason, TResultData>
+        : IRequest<BatchResult<TBatchReason, TReason, TResultData>>, ICoreRequestBase
+        where TBatchReason : struct
+        where TReason : struct
+        where TResultData : class
+    {
+        object ICoreRequestBase.MakeDefaultFailure()
+        {
+            return BatchResult<TBatchReason, TReason, TResultData>.MakeFailure();
+        }
+    }
+
+    public interface ICoreBatchRequestHandler<TCommand, TBatchReason, TReason, TResultData>
+        : IRequestHandler<TCommand, BatchResult<TBatchReason, TReason, TResultData>>
+        where TCommand : ICoreBatchRequest<TBatchReason, TReason, TResultData>
+        where TBatchReason : struct
         where TReason : struct
         where TResultData : class
     { }
@@ -55,9 +81,32 @@ namespace MyProject.Core
         }
     }
 
-    public interface ICoreRequestHandler<Command, TReason>
-        : IRequestHandler<Command, Result<TReason>>
-        where Command : ICoreRequest<TReason>
+    public interface ICoreRequestHandler<TCommand, TReason>
+        : IRequestHandler<TCommand, Result<TReason>>
+        where TCommand : ICoreRequest<TReason>
+        where TReason : struct
+    { }
+
+    /// <summary>
+    /// MyProject.Core에 들어있는 묶음 연산 request가 구현하는 인터페이스
+    /// </summary>
+    /// <typeparam name="TReason">실패시 이유를 나타내는 열거형</typeparam>
+    /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
+    public interface ICoreBatchRequest<TBatchReason, TReason>
+        : IRequest<BatchResult<TBatchReason, TReason>>, ICoreRequestBase
+        where TBatchReason : struct
+        where TReason : struct
+    {
+        object ICoreRequestBase.MakeDefaultFailure()
+        {
+            return BatchResult<TBatchReason, TReason>.MakeFailure();
+        }
+    }
+
+    public interface ICoreBatchRequestHandler<TCommand, TBatchReason, TReason>
+        : IRequestHandler<TCommand, BatchResult<TBatchReason, TReason>>
+        where TCommand : ICoreBatchRequest<TBatchReason, TReason>
+        where TBatchReason : struct
         where TReason : struct
     { }
 
@@ -75,9 +124,32 @@ namespace MyProject.Core
         }
     }
 
-    public interface ICoreDataRequestHandler<Command, TResultData>
-        : IRequestHandler<Command, DataResult<TResultData>>
-        where Command : ICoreDataRequest<TResultData>
+    public interface ICoreDataRequestHandler<TCommand, TResultData>
+        : IRequestHandler<TCommand, DataResult<TResultData>>
+        where TCommand : ICoreDataRequest<TResultData>
+        where TResultData : class
+    { }
+
+    /// <summary>
+    /// MyProject.Core에 들어있는 request가 구현하는 인터페이스
+    /// </summary>
+    /// <typeparam name="TReason">실패시 이유를 나타내는 열거형</typeparam>
+    /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
+    public interface ICoreBatchDataRequest<TBatchReason, TResultData>
+        : IRequest<BatchDataResult<TBatchReason, TResultData>>, ICoreRequestBase
+        where TBatchReason : struct
+        where TResultData : class
+    {
+        object ICoreRequestBase.MakeDefaultFailure()
+        {
+            return BatchDataResult<TBatchReason, TResultData>.MakeFailure();
+        }
+    }
+
+    public interface ICoreBatchDataRequestHandler<TCommand, TBatchReason, TResultData>
+        : IRequestHandler<TCommand, BatchDataResult<TBatchReason, TResultData>>
+        where TCommand : ICoreBatchDataRequest<TBatchReason, TResultData>
+        where TBatchReason : struct
         where TResultData : class
     { }
 
