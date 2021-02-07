@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MyProject.Core.Queries
 {
     [For(UserType.Administrator)]
-    public record TestQuery : ICoreRequest<TestErrorReason, TestResultView>
+    public record TestQuery : ICoreRequest<TestError, TestResultView>
     {
         public UserIdentity Identity { get; set; }
 
@@ -16,29 +16,29 @@ namespace MyProject.Core.Queries
         public int Argument2 { get; set; }
     }
 
-    public enum TestErrorReason
+    public enum TestError
     {
         UnknownError = 0,
         ValueIsNegative = 1,
         OutOfBound = 2,
     }
 
-    public class TestQueryHandler : ICoreRequestHandler<TestQuery, TestErrorReason, TestResultView>
+    public class TestQueryHandler : ICoreRequestHandler<TestQuery, TestError, TestResultView>
     {
-        public async Task<Result<TestErrorReason, TestResultView>> Handle(TestQuery request, CancellationToken cancellationToken)
+        public async Task<Result<TestError, TestResultView>> Handle(TestQuery request, CancellationToken cancellationToken)
         {
             int result = request.Argument1 + request.Argument2;
 
             if (result < 0)
-                return Result<TestErrorReason, TestResultView>.MakeFailure(TestErrorReason.ValueIsNegative);
+                return Result<TestError, TestResultView>.MakeFailure(TestError.ValueIsNegative);
 
             if (result > 20)
-                return Result<TestErrorReason, TestResultView>.MakeFailure(TestErrorReason.OutOfBound);
+                return Result<TestError, TestResultView>.MakeFailure(TestError.OutOfBound);
 
             if (result == 13)
                 throw new ArgumentException();
 
-            return Result<TestErrorReason, TestResultView>.MakeSuccess(new TestResultView
+            return Result<TestError, TestResultView>.MakeSuccess(new TestResultView
             {
                 Result = result
             });
