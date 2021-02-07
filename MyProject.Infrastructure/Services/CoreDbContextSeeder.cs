@@ -16,8 +16,8 @@ namespace MyProject.Infrastructure.Services
             foreach (var user in users)
             {
                 if (user.Username != null
-                    && context.Users.FirstOrDefault(u => u.Username == user.Username) == null)
-                    context.Users.Add(user);
+                    && context.Set<User>().FirstOrDefault(u => u.Username == user.Username) == null)
+                    context.Set<User>().Add(user);
             }
             context.SaveChanges();
         }

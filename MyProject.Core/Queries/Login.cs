@@ -3,6 +3,7 @@ using MyProject.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using MyProject.Models;
 
 namespace MyProject.Core.Commands
 {
@@ -35,7 +36,7 @@ namespace MyProject.Core.Commands
 
         public async Task<DataResult<LoginResultView>> Handle(LoginQuery request, CancellationToken cancellationToken)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(user => user.Username == request.Username, cancellationToken);
+            var user = await _dbContext.Set<User>().FirstOrDefaultAsync(user => user.Username == request.Username, cancellationToken);
 
             if (user == null)
                 return DataResult<LoginResultView>.MakeFailure();

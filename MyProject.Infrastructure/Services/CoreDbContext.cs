@@ -7,21 +7,17 @@ namespace MyProject.Infrastructure.Services
 {
     public class CoreDbContext : DbContext, ICoreDbContext
     {
-        public virtual DbSet<User> Users { get; set; }
-
         public CoreDbContext(DbContextOptions<CoreDbContext> options)
             : base(options)
         { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new GeneralUserEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new AdministratorUserEntityTypeConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(User).Assembly);
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                modelBuilder.Entity(entityType.Name).ForMySQLHasCollation("utf8_general_ci");
+                modelBuilder.Entity(entityType.Name).ForMySQLHasCollation("utf8mb4_general_ci");
             }
         }
     }
