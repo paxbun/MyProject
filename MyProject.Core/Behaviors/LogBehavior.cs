@@ -33,7 +33,7 @@ namespace MyProject.Core.Behaviors
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (request is ICoreRequestBase coreRequest)
+            if (request is ICoreRequestBase<TResponse> coreRequest)
             {
                 ILogger logger = _factory.CreateLogger(request.GetType().Name);
                 EventId eventId = GetNextEventId();
@@ -49,7 +49,7 @@ namespace MyProject.Core.Behaviors
                 {
                     logger.LogError(eventId, "Request: {0}", coreRequest);
                     logger.LogError(eventId, "Exception: {0}", ex);
-                    return (TResponse)coreRequest.MakeDefaultFailure();
+                    return coreRequest.MakeDefaultFailure();
                 }
             }
             else

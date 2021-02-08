@@ -12,11 +12,14 @@ namespace MyProject.Core
         /// 현재 로그인 중인 사용자 정보
         /// </summary>
         public UserIdentity Identity { get; set; }
+    }
 
+    public interface ICoreRequestBase<TResult> : ICoreRequestBase, IRequest<TResult>
+    {
         /// <summary>
         /// 액션이 처리하지 않은 예외가 발생했을 때 반환해야하는 <c>Result</c> 또는 <c>DataResult</c> 객체를 반환하는 함수
         /// </summary>
-        public object MakeDefaultFailure();
+        public TResult MakeDefaultFailure();
     }
 
     /// <summary>
@@ -25,11 +28,11 @@ namespace MyProject.Core
     /// <typeparam name="TError">실패시 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
     public interface ICoreRequest<TError, TResultData>
-        : IRequest<Result<TError, TResultData>>, ICoreRequestBase
+        : ICoreRequestBase<Result<TError, TResultData>>
         where TError : struct
         where TResultData : class
     {
-        object ICoreRequestBase.MakeDefaultFailure()
+        Result<TError, TResultData> ICoreRequestBase<Result<TError, TResultData>>.MakeDefaultFailure()
         {
             return Result<TError, TResultData>.MakeFailure();
         }
@@ -48,12 +51,12 @@ namespace MyProject.Core
     /// <typeparam name="TError">실패시 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
     public interface ICoreBatchRequest<TBatchError, TError, TResultData>
-        : IRequest<BatchResult<TBatchError, TError, TResultData>>, ICoreRequestBase
+        : ICoreRequestBase<BatchResult<TBatchError, TError, TResultData>>
         where TBatchError : struct
         where TError : struct
         where TResultData : class
     {
-        object ICoreRequestBase.MakeDefaultFailure()
+        BatchResult<TBatchError, TError, TResultData> ICoreRequestBase<BatchResult<TBatchError, TError, TResultData>>.MakeDefaultFailure()
         {
             return BatchResult<TBatchError, TError, TResultData>.MakeFailure();
         }
@@ -72,10 +75,10 @@ namespace MyProject.Core
     /// </summary>
     /// <typeparam name="TError">실패시 이유를 나타내는 열거형</typeparam>
     public interface ICoreRequest<TError>
-        : IRequest<Result<TError>>, ICoreRequestBase
+        : ICoreRequestBase<Result<TError>>
         where TError : struct
     {
-        object ICoreRequestBase.MakeDefaultFailure()
+        Result<TError> ICoreRequestBase<Result<TError>>.MakeDefaultFailure()
         {
             return Result<TError>.MakeFailure();
         }
@@ -93,11 +96,11 @@ namespace MyProject.Core
     /// <typeparam name="TError">실패시 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
     public interface ICoreBatchRequest<TBatchError, TError>
-        : IRequest<BatchResult<TBatchError, TError>>, ICoreRequestBase
+        : ICoreRequestBase<BatchResult<TBatchError, TError>>
         where TBatchError : struct
         where TError : struct
     {
-        object ICoreRequestBase.MakeDefaultFailure()
+        BatchResult<TBatchError, TError> ICoreRequestBase<BatchResult<TBatchError, TError>>.MakeDefaultFailure()
         {
             return BatchResult<TBatchError, TError>.MakeFailure();
         }
@@ -115,10 +118,10 @@ namespace MyProject.Core
     /// </summary>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
     public interface ICoreDataRequest<TResultData>
-        : IRequest<DataResult<TResultData>>, ICoreRequestBase
+        : ICoreRequestBase<DataResult<TResultData>>
         where TResultData : class
     {
-        object ICoreRequestBase.MakeDefaultFailure()
+        DataResult<TResultData> ICoreRequestBase<DataResult<TResultData>>.MakeDefaultFailure()
         {
             return DataResult<TResultData>.MakeFailure();
         }
@@ -136,11 +139,11 @@ namespace MyProject.Core
     /// <typeparam name="TError">실패시 이유를 나타내는 열거형</typeparam>
     /// <typeparam name="TResultData">성공시 추가 데이터</typeparam>
     public interface ICoreBatchDataRequest<TBatchError, TResultData>
-        : IRequest<BatchDataResult<TBatchError, TResultData>>, ICoreRequestBase
+        : ICoreRequestBase<BatchDataResult<TBatchError, TResultData>>
         where TBatchError : struct
         where TResultData : class
     {
-        object ICoreRequestBase.MakeDefaultFailure()
+        BatchDataResult<TBatchError, TResultData> ICoreRequestBase<BatchDataResult<TBatchError, TResultData>>.MakeDefaultFailure()
         {
             return BatchDataResult<TBatchError, TResultData>.MakeFailure();
         }
