@@ -146,7 +146,8 @@ namespace MyProject.Infrastructure.Services
             logger.LogInformation(eventId, "Request: {0}", SerializeObject(request));
             foreach (var intermediateError in data.Errors)
             {
-                logger.LogWarning(eventId, "Exception: {0}", intermediateError);
+                logger.LogWarning(eventId, "Exception: {0}", intermediateError.Exception);
+                logger.LogWarning(eventId, "Intermediate: {0}", intermediateError.Intermediate);
             }
             logger.LogInformation(eventId, "Response: {0}", SerializeObject(response));
 
@@ -162,7 +163,8 @@ namespace MyProject.Infrastructure.Services
             logger.LogInformation(eventId, "Request: {0}", SerializeObject(request));
             foreach (var intermediateError in data.Errors)
             {
-                logger.LogWarning(eventId, "Exception: {0}", intermediateError);
+                logger.LogWarning(eventId, "Exception: {0}", intermediateError.Exception);
+                logger.LogWarning(eventId, "Intermediate: {0}", intermediateError.Intermediate);
             }
             logger.LogError(eventId, "Exception: {0}", ex);
         }
