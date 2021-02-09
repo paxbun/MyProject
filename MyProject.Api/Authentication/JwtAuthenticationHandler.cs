@@ -34,8 +34,6 @@ namespace MyProject.Api.Authentication
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var endpoint = Context.GetEndpoint();
-            if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
-                return Task.FromResult(AuthenticateResult.NoResult());
 
             try
             {
@@ -59,6 +57,9 @@ namespace MyProject.Api.Authentication
             }
             catch (Exception ex)
             {
+                if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
+                    return Task.FromResult(AuthenticateResult.NoResult());
+
                 return Task.FromResult(AuthenticateResult.Fail(ex));
             }
         }
