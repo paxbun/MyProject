@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using MyProject.Core.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,44 +12,25 @@ namespace MyProject.Core.Behaviors
     /// </summary>
     public class LogBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
-        private readonly ILoggerFactory _factory;
+        private readonly ICoreLogger _logger;
 
-        private static readonly object _eventIdLock = new();
-        private static int _eventId = 1;
-
-        private static EventId GetNextEventId()
-        {
-            lock (_eventIdLock)
-            {
-                EventId rtn = new(_eventId);
-                ++_eventId;
-                return rtn;
-            }
-        }
-
-        public LogBehavior(ILoggerFactory factory)
-        {
-            _factory = factory;
-        }
+        public LogBehavior(ICoreLogger logger) => _logger = logger;
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             if (request is ICoreRequestBase<TResponse> coreRequest)
             {
-                ILogger logger = _factory.CreateLogger(request.GetType().Name);
-                EventId eventId = GetNextEventId();
+                await _logger.TrackRequestAsync(coreRequest, cancellationToken);
 
                 try
                 {
                     var response = await next();
-                    logger.LogInformation(eventId, "Request: {0}", coreRequest);
-                    logger.LogInformation(eventId, "Response: {0}", response);
+                    await _logger.ReportSuccessAsync(request, response, cancellationToken);
                     return response;
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(eventId, "Request: {0}", coreRequest);
-                    logger.LogError(eventId, "Exception: {0}", ex);
+                    await _logger.ReportErrorAsync(request, ex, cancellationToken);
                     return coreRequest.MakeDefaultFailure();
                 }
             }

@@ -23,6 +23,37 @@ namespace MyProject.Core.Commands
         public string Password { get; set; }
     }
 
+    public class LoginQueryFormatter : ICoreLoggerFormatter<LoginQuery>
+    {
+        public record LoginQueryForLogger
+        {
+            public string Username { get; init; }
+            public int PasswordLength { get; init; }
+        }
+
+        public object Format(LoginQuery obj)
+        {
+            return new LoginQueryForLogger
+            {
+                Username = obj.Username,
+                PasswordLength = obj.Password?.Length ?? 0
+            };
+        }
+    }
+
+    public class LoginResultViewFormatter : ICoreLoggerFormatter<DataResult<LoginResultView>>
+    {
+        private readonly IUserIdentityService _identityService;
+
+        public LoginResultViewFormatter(IUserIdentityService identityService)
+            => _identityService = identityService;
+
+        public object Format(DataResult<LoginResultView> obj)
+        {
+            return obj.Select(view => _identityService.ReadUserIdentity(view.AccessToken, TokenType.AccessToken));
+        }
+    }
+
     public class LoginQueryHandler : ICoreDataRequestHandler<LoginQuery, LoginResultView>
     {
         private readonly ICoreDbContext _dbContext;

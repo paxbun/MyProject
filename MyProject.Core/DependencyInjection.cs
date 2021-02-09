@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using MyProject.Core.Services;
 
 namespace MyProject.Core
 {
@@ -12,6 +13,7 @@ namespace MyProject.Core
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LogBehavior<,>));
+            services.AddCoreLoggerFormatters();
             return services;
         }
     }

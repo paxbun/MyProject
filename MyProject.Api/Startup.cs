@@ -14,12 +14,14 @@ namespace MyProject.Api
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
         private const string _myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _configuration = configuration;
+            _environment = environment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -40,7 +42,7 @@ namespace MyProject.Api
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
             services.AddCore();
-            services.AddInfrastructure(_configuration);
+            services.AddInfrastructure(_configuration, _environment);
             services.AddControllers();
             services.AddAuthentication(JwtAuthenticationHandler.Scheme)
                 .AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(

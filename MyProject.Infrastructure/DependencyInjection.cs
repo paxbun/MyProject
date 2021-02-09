@@ -4,12 +4,14 @@ using MyProject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace MyProject.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(
+            this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
             services.AddDbContext<CoreDbContext>(options =>
             {
@@ -31,7 +33,14 @@ namespace MyProject.Infrastructure
                 return dbContext;
             });
             services.AddSingleton<IUserIdentityService, UserIdentityService>();
-
+            if (environment.IsDevelopment())
+            {
+                services.AddSingleton<ICoreLogger, ConsoleLogger>();
+            }
+            else
+            {
+                // TODO: Add services
+            }
             return services;
         }
     }
