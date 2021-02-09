@@ -1,12 +1,12 @@
-using MyProject.Api.Authentication;
-using MyProject.Core;
-using MyProject.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyProject.Api.Authentication;
+using MyProject.Core;
+using MyProject.Infrastructure;
 using System.Text.Json.Serialization;
 
 namespace MyProject.Api

@@ -2,11 +2,10 @@
 using MyProject.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Linq.Expressions;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 #pragma warning disable CS1998
 

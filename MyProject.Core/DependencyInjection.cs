@@ -1,8 +1,8 @@
-﻿using MyProject.Core.Behaviors;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using MyProject.Core.Behaviors;
 using MyProject.Core.Services;
+using System.Reflection;
 
 namespace MyProject.Core
 {

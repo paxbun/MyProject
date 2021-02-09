@@ -1,8 +1,8 @@
-﻿using MyProject.Core.Services;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using MyProject.Core.Services;
 using MyProject.Core.ViewModels;
 using MyProject.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;

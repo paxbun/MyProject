@@ -1,10 +1,10 @@
-﻿using MyProject.Core.Services;
-using MyProject.Infrastructure.Services;
-using MyProject.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyProject.Core.Services;
+using MyProject.Infrastructure.Services;
+using MyProject.Models;
 
 namespace MyProject.Infrastructure
 {

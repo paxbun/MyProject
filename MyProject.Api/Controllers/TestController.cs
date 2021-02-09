@@ -1,7 +1,7 @@
-﻿using MyProject.Core.Queries;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyProject.Core.Queries;
 using System.Threading.Tasks;
 
 namespace MyProject.Api.Controllers

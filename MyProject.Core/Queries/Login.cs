@@ -1,9 +1,9 @@
-﻿using MyProject.Core.Services;
+﻿using Microsoft.EntityFrameworkCore;
+using MyProject.Core.Services;
 using MyProject.Core.ViewModels;
-using Microsoft.EntityFrameworkCore;
+using MyProject.Models;
 using System.Threading;
 using System.Threading.Tasks;
-using MyProject.Models;
 
 namespace MyProject.Core.Commands
 {

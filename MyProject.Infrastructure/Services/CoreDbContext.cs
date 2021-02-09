@@ -1,6 +1,6 @@
-﻿using MyProject.Core.Services;
+﻿using Microsoft.EntityFrameworkCore;
+using MyProject.Core.Services;
 using MyProject.Models;
-using Microsoft.EntityFrameworkCore;
 using MySql.Data.EntityFrameworkCore.Extensions;
 
 namespace MyProject.Infrastructure.Services

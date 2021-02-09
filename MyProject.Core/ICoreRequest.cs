@@ -1,8 +1,7 @@
-﻿using MyProject.Core.ViewModels;
+﻿using MediatR;
+using MyProject.Core.ViewModels;
 using MyProject.Models;
-using MediatR;
 using System;
-using System.Collections.Generic;
 
 namespace MyProject.Core
 {

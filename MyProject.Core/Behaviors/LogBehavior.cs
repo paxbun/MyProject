@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using MyProject.Core.Services;
 using System;
 using System.Threading;

@@ -1,10 +1,10 @@
-﻿using MyProject.Core.Services;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using MyProject.Core.Services;
 using System;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
