@@ -13,6 +13,7 @@ namespace MyProject.Core
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LogBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DisposableBehavior<,>));
             services.AddCoreLoggerFormatters();
             return services;
         }
