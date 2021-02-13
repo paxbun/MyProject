@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyProject.Core.Queries;
+using System;
 using System.Threading.Tasks;
 
 namespace MyProject.Api.Controllers
@@ -21,6 +22,7 @@ namespace MyProject.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Test(TestQuery query)
         {
+            Console.WriteLine("Testing");
             query.GetUserIdentity(this);
             var result = await _mediator.Send(query);
             return result.ToActionResult(this);

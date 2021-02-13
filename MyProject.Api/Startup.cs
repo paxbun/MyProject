@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyProject.Api.Authentication;
+using MyProject.Api.Controllers;
 using MyProject.Core;
 using MyProject.Infrastructure;
 using System.Text.Json.Serialization;
@@ -44,6 +45,10 @@ namespace MyProject.Api
             services.AddCore();
             services.AddInfrastructure(_configuration, _environment);
             services.AddControllers();
+            services.AddMvc().ConfigureApplicationPartManager(options =>
+            {
+                options.FeatureProviders.Add(new GenericControllerFeatureProvider());
+            });
             services.AddAuthentication(JwtAuthenticationHandler.Scheme)
                 .AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(
                     JwtAuthenticationHandler.Scheme, null);
