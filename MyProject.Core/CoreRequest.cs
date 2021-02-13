@@ -226,6 +226,38 @@ namespace MyProject.Core
 
     public static class CoreRequestHelpers
     {
+        private static void CheckUnknownErrorWithZero(Type enumType)
+        {
+            int unknownErrorValue;
+            if (Enum.TryParse(enumType, "UnknownError", out object outValue))
+                unknownErrorValue = (int)outValue;
+            else
+                unknownErrorValue = -1;
+
+            if (unknownErrorValue != 0)
+                throw new Exception(
+                    $"CoreRequest에 사용되는 열거형 {enumType.Name}에 값이 0인 UnknownError가 존재하지 않습니다.");
+        }
+
+        private static void CheckUnknownErrorWithZero()
+        {
+            var requestTypes = GetTypesWithGenericInterface(typeof(ICoreRequestBase<>));
+            foreach (var (_, interfaceType) in requestTypes)
+            {
+                var resultType = interfaceType.GenericTypeArguments[0];
+                foreach (var enumType in resultType.GenericTypeArguments)
+                {
+                    if (enumType.IsEnum)
+                        CheckUnknownErrorWithZero(enumType);
+                }
+            }
+        }
+
+        static CoreRequestHelpers()
+        {
+            CheckUnknownErrorWithZero();
+        }
+
         public static IEnumerable<TypeInterfacePair> GetTypesWithGenericInterface(Type genericInterface)
         {
             if (!genericInterface.IsInterface || !genericInterface.IsGenericType)
