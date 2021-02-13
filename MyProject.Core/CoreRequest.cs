@@ -214,7 +214,7 @@ namespace MyProject.Core
     /// <summary>
     /// request를 사용할 수 있는 사용자를 정의하는 attribute
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class ForAttribute : Attribute
     {
         /// <summary>
