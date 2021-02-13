@@ -72,7 +72,7 @@ namespace MyProject.Core.Services
 
                 if (!type.IsAbstract && !type.IsInterface && @interface != null)
                 {
-                    services.AddSingleton(@interface, type);
+                    services.AddTransient(@interface, type);
                 }
             }
 
