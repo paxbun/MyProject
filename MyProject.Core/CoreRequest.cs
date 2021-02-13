@@ -237,6 +237,12 @@ namespace MyProject.Core
             if (unknownErrorValue != 0)
                 throw new Exception(
                     $"CoreRequest에 사용되는 열거형 {enumType.Name}에 값이 0인 UnknownError가 존재하지 않습니다.");
+
+            var unknownErrorMember = enumType.GetMember("UnknownError")[0];
+            var displayAttribute = Attribute.GetCustomAttribute(unknownErrorMember, typeof(DisplayAttribute));
+            if (displayAttribute != null)
+                throw new Exception(
+                    $"CoreRequest에 사용되는 열거형 {enumType.Name}의 UnknownError에 DisplayAttribute가 붙어있습니다.");
         }
 
         private static void CheckUnknownErrorWithZero()
