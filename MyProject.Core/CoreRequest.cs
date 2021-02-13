@@ -62,6 +62,8 @@ namespace MyProject.Core
     {
         public UserIdentity Identity { get; set; }
 
+        public List<Result<TError, TResultData>> MakeResultList() => new();
+
         public BatchResult<TBatchError, TError, TResultData> MakeBatchSuccess(IEnumerable<Result<TError, TResultData>> enumerable = default)
         {
             return BatchResult<TBatchError, TError, TResultData>.MakeSuccess(enumerable);
@@ -122,6 +124,8 @@ namespace MyProject.Core
     {
         public UserIdentity Identity { get; set; }
 
+        public List<Result<TError>> MakeResultList() => new();
+
         public BatchResult<TBatchError, TError> MakeBatchSuccess(IEnumerable<Result<TError>> enumerable = default)
         {
             return BatchResult<TBatchError, TError>.MakeSuccess(enumerable);
@@ -180,6 +184,8 @@ namespace MyProject.Core
         where TResultData : class
     {
         public UserIdentity Identity { get; set; }
+
+        public List<DataResult<TResultData>> MakeResultList() => new();
 
         public BatchDataResult<TBatchError, TResultData> MakeBatchSuccess(IEnumerable<DataResult<TResultData>> enumerable = default)
         {
