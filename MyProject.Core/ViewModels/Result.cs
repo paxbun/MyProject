@@ -107,12 +107,12 @@ namespace MyProject.Core.ViewModels
         }
 
         public static BatchResult<TBatchError, TError, TResultData> MakeFailure(
-            TBatchError Error = default)
+            TBatchError error = default)
         {
             return new BatchResult<TBatchError, TError, TResultData>
             {
                 Success = false,
-                Error = Error,
+                Error = error,
                 _results = Array.Empty<Result<TError, TResultData>>()
             };
         }
@@ -206,12 +206,12 @@ namespace MyProject.Core.ViewModels
         }
 
         public static BatchResult<TBatchError, TError> MakeFailure(
-            TBatchError Error = default)
+            TBatchError error = default)
         {
             return new BatchResult<TBatchError, TError>
             {
                 Success = false,
-                Error = Error,
+                Error = error,
                 _results = Array.Empty<Result<TError>>()
             };
         }
@@ -302,12 +302,12 @@ namespace MyProject.Core.ViewModels
         }
 
         public static BatchDataResult<TBatchError, TResultData> MakeFailure(
-            TBatchError Error = default)
+            TBatchError error = default)
         {
             return new BatchDataResult<TBatchError, TResultData>
             {
                 Success = false,
-                Error = Error,
+                Error = error,
                 _results = Array.Empty<DataResult<TResultData>>()
             };
         }
