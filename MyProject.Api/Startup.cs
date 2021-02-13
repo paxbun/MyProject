@@ -44,8 +44,7 @@ namespace MyProject.Api
             });
             services.AddCore();
             services.AddInfrastructure(_configuration, _environment);
-            services.AddControllers();
-            services.AddMvc().ConfigureApplicationPartManager(options =>
+            services.AddControllers().ConfigureApplicationPartManager(options =>
             {
                 options.FeatureProviders.Add(new GenericControllerFeatureProvider());
             });
