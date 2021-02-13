@@ -305,4 +305,24 @@ namespace MyProject.Core
 
         public ForAttribute(params UserType[] types) => Types = types;
     }
+
+    /// <summary>
+    /// 오류를 나타내는 열거형의 멤버에 달아 사용자에게 표시할 메시지를 정의하는 attribute
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    public class DisplayAttribute : Attribute
+    {
+        /// <summary>
+        /// 사용자에게 표시할 메시지
+        /// </summary>
+        public string Content { get; }
+
+        /// <summary>
+        /// 사용자가 사용 중인 시스템의 언어-국가 코드입니다. <c>Locale</c>이 <c>null</c>이면
+        /// 기본 메시지로 사용됩니다.
+        /// </summary>
+        public string Locale { get; set; }
+
+        public DisplayAttribute(string content) => Content = content;
+    }
 }

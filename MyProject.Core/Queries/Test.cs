@@ -21,11 +21,14 @@ namespace MyProject.Core.Queries
         /// <summary>
         /// 결과가 음수
         /// </summary>
+        [Display("결과가 음수입니다.", Locale = "ko-KR")]
+        [Display("The result is negative.", Locale = "en-US")]
         ValueIsNegative,
 
         /// <summary>
         /// 결과가 20 초과
         /// </summary>
+        [Display("결과가 20을 초과합니다.")]
         OutOfBound,
     }
 
