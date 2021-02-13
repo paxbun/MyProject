@@ -3,6 +3,7 @@ using MyProject.Core.ViewModels;
 using MyProject.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MyProject.Core
 {
@@ -210,6 +211,49 @@ namespace MyProject.Core
         where TBatchError : struct
         where TResultData : class
     { }
+
+    public struct TypeInterfacePair
+    {
+        public Type Type { get; set; }
+        public Type InterfaceType { get; set; }
+
+        public void Deconstruct(out Type type, out Type interfaceType)
+        {
+            type = Type;
+            interfaceType = InterfaceType;
+        }
+    }
+
+    public static class CoreRequestHelpers
+    {
+        public static IEnumerable<TypeInterfacePair> GetTypesWithGenericInterface(Type genericInterface)
+        {
+            if (!genericInterface.IsInterface || !genericInterface.IsGenericType)
+                throw new ArgumentException(nameof(genericInterface));
+
+            var coreAssembly = typeof(CoreRequestHelpers).Assembly;
+            foreach (var type in coreAssembly.GetTypes())
+            {
+                if (type.IsAbstract || type.IsInterface || !type.IsClass)
+                    continue;
+
+                var interfaces = type.GetInterfaces();
+                var @interface = interfaces.Where(
+                    i => i.IsGenericType
+                        && i.GetGenericTypeDefinition() == genericInterface)
+                    .FirstOrDefault();
+
+                if (@interface != null)
+                {
+                    yield return new TypeInterfacePair
+                    {
+                        Type = type,
+                        InterfaceType = @interface
+                    };
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// request를 사용할 수 있는 사용자를 정의하는 attribute

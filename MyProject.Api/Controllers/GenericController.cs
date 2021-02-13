@@ -50,30 +50,18 @@ namespace MyProject.Api.Controllers
 
         public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
         {
-            var core = typeof(ICoreRequestBase).Assembly;
-            foreach (var requestType in core.GetTypes())
+            var requestTypes = CoreRequestHelpers.GetTypesWithGenericInterface(typeof(ICoreRequestBase<>));
+            foreach (var (requestType, interfaceType) in requestTypes)
             {
-                if (requestType.IsAbstract || requestType.IsInterface)
+                var resultType = interfaceType.GenericTypeArguments[0];
+                var pascalCasedName = GenericControllerNameHelpers.GetRequestName(requestType.Name);
+                var controllerName = pascalCasedName + "Controller";
+
+                if (feature.Controllers.Where(controller => controller.Name == controllerName).Any())
                     continue;
 
-                var interfaces = requestType.GetInterfaces();
-                var @interface = interfaces.Where(
-                    i => i.IsGenericType
-                        && i.GetGenericTypeDefinition() == typeof(ICoreRequestBase<>))
-                    .FirstOrDefault();
-
-                if (@interface != null)
-                {
-                    var pascalCasedName = GenericControllerNameHelpers.GetRequestName(requestType.Name);
-                    var controllerName = pascalCasedName + "Controller";
-
-                    if (feature.Controllers.Where(controller => controller.Name == controllerName).Any())
-                        continue;
-
-                    var resultType = @interface.GenericTypeArguments[0];
-                    var controllerType = typeof(GenericController<,>).MakeGenericType(requestType, resultType);
-                    feature.Controllers.Add(controllerType.GetTypeInfo());
-                }
+                var controllerType = typeof(GenericController<,>).MakeGenericType(requestType, resultType);
+                feature.Controllers.Add(controllerType.GetTypeInfo());
             }
         }
     }

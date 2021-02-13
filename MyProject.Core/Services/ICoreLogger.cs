@@ -60,20 +60,12 @@ namespace MyProject.Core.Services
         /// </summary>
         public static IServiceCollection AddCoreLoggerFormatters(this IServiceCollection services)
         {
+            var formatterTypes = CoreRequestHelpers.GetTypesWithGenericInterface(
+                typeof(ICoreLoggerFormatter<>));
 
-            var types = typeof(CoreLoggerExtensions).Assembly.GetTypes();
-
-            foreach (var type in types)
+            foreach (var (formatterType, interfacetype) in formatterTypes)
             {
-                var interfaces = type.GetInterfaces();
-                var @interface = interfaces.Where(
-                    i => i.IsGenericType
-                        && i.GetGenericTypeDefinition() == typeof(ICoreLoggerFormatter<>)).FirstOrDefault();
-
-                if (!type.IsAbstract && !type.IsInterface && @interface != null)
-                {
-                    services.AddTransient(@interface, type);
-                }
+                services.AddTransient(interfacetype, formatterType);
             }
 
             return services;
