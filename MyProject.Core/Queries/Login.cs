@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 namespace MyProject.Core.Commands
 {
     [For(AllowAnonymous = true)]
-    public record LoginQuery : ICoreDataRequest<LoginResultView>
+    public class LoginQuery : CoreDataRequest<LoginResultView>
     {
-        public UserIdentity Identity { get; set; }
-
         /// <summary>
         /// 사용자 ID
         /// </summary>
@@ -70,14 +68,14 @@ namespace MyProject.Core.Commands
             var user = await _dbContext.Set<User>().FirstOrDefaultAsync(user => user.Username == request.Username, cancellationToken);
 
             if (user == null)
-                return DataResult<LoginResultView>.MakeFailure();
+                return request.MakeFailure();
 
             if (!user.VerifyPassword(request.Password))
-                return DataResult<LoginResultView>.MakeFailure();
+                return request.MakeFailure();
 
             var identity = UserIdentity.FromUser(user);
 
-            return DataResult<LoginResultView>.MakeSuccess(new LoginResultView
+            return request.MakeSuccess(new LoginResultView
             {
                 AccessToken = _identityService.GenerateToken(identity, TokenType.AccessToken),
                 RefreshToken = _identityService.GenerateToken(identity, TokenType.RefreshToken),

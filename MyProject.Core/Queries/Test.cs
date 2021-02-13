@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 namespace MyProject.Core.Queries
 {
     [For(UserType.Administrator)]
-    public record TestQuery : ICoreRequest<TestError, TestResultView>
+    public class TestQuery : CoreRequest<TestError, TestResultView>
     {
-        public UserIdentity Identity { get; set; }
-
         public int Argument1 { get; set; }
 
         public int Argument2 { get; set; }
@@ -18,9 +16,17 @@ namespace MyProject.Core.Queries
 
     public enum TestError
     {
-        UnknownError = 0,
-        ValueIsNegative = 1,
-        OutOfBound = 2,
+        UnknownError,
+
+        /// <summary>
+        /// 결과가 음수
+        /// </summary>
+        ValueIsNegative,
+
+        /// <summary>
+        /// 결과가 20 초과
+        /// </summary>
+        OutOfBound,
     }
 
     public class TestQueryHandler : ICoreRequestHandler<TestQuery, TestError, TestResultView>
@@ -30,15 +36,16 @@ namespace MyProject.Core.Queries
             int result = request.Argument1 + request.Argument2;
 
             if (result < 0)
-                return Result<TestError, TestResultView>.MakeFailure(TestError.ValueIsNegative);
+                return request.MakeFailure(TestError.ValueIsNegative);
 
             if (result > 20)
-                return Result<TestError, TestResultView>.MakeFailure(TestError.OutOfBound);
+                return request.MakeFailure(TestError.OutOfBound);
 
+            // 테스트용
             if (result == 13)
                 throw new ArgumentException();
 
-            return Result<TestError, TestResultView>.MakeSuccess(new TestResultView
+            return request.MakeSuccess(new TestResultView
             {
                 Result = result
             });
