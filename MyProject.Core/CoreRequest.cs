@@ -253,7 +253,7 @@ namespace MyProject.Core
             if (typeProperty == null)
                 throw new Exception(
                     $"CoreRequest의 오류를 나타내는 자료형 {typename}에 속성 Type이 존재하지 않습니다.");
-            
+
             var typePropertyType = typeProperty.PropertyType;
             if (!typePropertyType.IsEnum)
                 throw new Exception(
@@ -281,7 +281,7 @@ namespace MyProject.Core
                 {
                     if (errorType.IsEnum)
                         CheckReqeustTypes(errorType);
-                    if (errorType.IsValueType)
+                    else if (errorType.IsValueType)
                         CheckReqeustTypesStruct(errorType);
                 }
             }
