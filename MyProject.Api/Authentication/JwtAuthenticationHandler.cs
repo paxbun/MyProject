@@ -31,20 +31,18 @@ namespace MyProject.Api.Authentication
             _identityService = identityService;
         }
 
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        private AuthenticateResult HandleAuthenticate()
         {
-            var endpoint = Context.GetEndpoint();
-
             try
             {
                 var authorization = Request.Headers[HeaderNames.Authorization].ToString();
                 if (!authorization.StartsWith("Bearer "))
-                    return Task.FromResult(AuthenticateResult.Fail("No user identity given"));
+                    return AuthenticateResult.Fail("No user identity given");
                 authorization = authorization[7..];
 
                 var identity = _identityService.ReadUserIdentity(authorization, TokenType.AccessToken);
                 if (identity == null)
-                    return Task.FromResult(AuthenticateResult.Fail("No user identity given"));
+                    return AuthenticateResult.Fail("No user identity given");
 
                 Request.HttpContext.Items[IdentityKey] = identity;
 
@@ -53,15 +51,23 @@ namespace MyProject.Api.Authentication
                 ClaimsPrincipal claimsPrincipal = new(claimsIdentity);
                 AuthenticationTicket ticket = new(claimsPrincipal, Scheme);
 
-                return Task.FromResult(AuthenticateResult.Success(ticket));
+                return AuthenticateResult.Success(ticket);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
-                    return Task.FromResult(AuthenticateResult.NoResult());
-
-                return Task.FromResult(AuthenticateResult.Fail(ex));
+                return AuthenticateResult.Fail("No user identity given");
             }
+        }
+
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        {
+            var result = HandleAuthenticate();
+            if (!result.Succeeded)
+            {
+                if (Context.GetEndpoint()?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
+                    result = AuthenticateResult.NoResult();
+            }
+            return Task.FromResult(result);
         }
     }
 }
