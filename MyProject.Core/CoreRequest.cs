@@ -226,7 +226,7 @@ namespace MyProject.Core
 
     public static class CoreRequestHelpers
     {
-        private static void CheckUnknownErrorWithZero(Type enumType)
+        private static void CheckReqeustTypes(Type enumType)
         {
             int unknownErrorValue;
             if (Enum.TryParse(enumType, "UnknownError", out object outValue))
@@ -236,32 +236,60 @@ namespace MyProject.Core
 
             if (unknownErrorValue != 0)
                 throw new Exception(
-                    $"CoreRequest에 사용되는 열거형 {enumType.Name}에 값이 0인 UnknownError가 존재하지 않습니다.");
+                    $"CoreRequest의 오류를 나타내는 자료형 {enumType.Name}에 값이 0인 UnknownError가 존재하지 않습니다.");
 
             var unknownErrorMember = enumType.GetMember("UnknownError")[0];
             var displayAttribute = Attribute.GetCustomAttribute(unknownErrorMember, typeof(DisplayAttribute));
             if (displayAttribute != null)
                 throw new Exception(
-                    $"CoreRequest에 사용되는 열거형 {enumType.Name}의 UnknownError에 DisplayAttribute가 붙어있습니다.");
+                    $"CoreRequest의 오류를 나타내는 자료형 {enumType.Name}의 UnknownError에 DisplayAttribute가 붙어있습니다.");
         }
 
-        private static void CheckUnknownErrorWithZero()
+        private static void CheckReqeustTypesStruct(Type structType)
+        {
+            var typename = structType.Name;
+
+            var typeProperty = structType.GetProperty("Type");
+            if (typeProperty == null)
+                throw new Exception(
+                    $"CoreRequest의 오류를 나타내는 자료형 {typename}에 속성 Type이 존재하지 않습니다.");
+            
+            var typePropertyType = typeProperty.PropertyType;
+            if (!typePropertyType.IsEnum)
+                throw new Exception(
+                    $"CoreRequest의 오류를 나타내는 자료형 {typename}의 속성 Type의 자료형이 열거형이 아닙니다.");
+
+            CheckReqeustTypes(typePropertyType);
+
+            var dataProperty = structType.GetProperty("Data");
+            if (dataProperty == null)
+                throw new Exception(
+                    $"CoreRequest의 오류를 나타내는 자료형 {typename}에 속성 Data가 존재하지 않습니다.");
+
+            if (structType.GetProperties().Length != 2)
+                throw new Exception(
+                    $"CoreRequest의 오류를 나타내는 자료형 {typename}에 Type, Data외의 속성이 존재합니다.");
+        }
+
+        private static void CheckReqeustTypes()
         {
             var requestTypes = GetTypesWithGenericInterface(typeof(ICoreRequestBase<>));
-            foreach (var (_, interfaceType) in requestTypes)
+            foreach (var (requestType, interfaceType) in requestTypes)
             {
                 var resultType = interfaceType.GenericTypeArguments[0];
-                foreach (var enumType in resultType.GenericTypeArguments)
+                foreach (var errorType in resultType.GenericTypeArguments)
                 {
-                    if (enumType.IsEnum)
-                        CheckUnknownErrorWithZero(enumType);
+                    if (errorType.IsEnum)
+                        CheckReqeustTypes(errorType);
+                    if (errorType.IsValueType)
+                        CheckReqeustTypesStruct(errorType);
                 }
             }
         }
 
         static CoreRequestHelpers()
         {
-            CheckUnknownErrorWithZero();
+            CheckReqeustTypes();
         }
 
         public static IEnumerable<TypeInterfacePair> GetTypesWithGenericInterface(Type genericInterface)
