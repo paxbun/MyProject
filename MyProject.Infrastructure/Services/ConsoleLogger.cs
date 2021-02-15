@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
-using MyProject.Core.Services;
+﻿using MyProject.Core.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,11 @@ namespace MyProject.Infrastructure.Services
         private static readonly Dictionary<object, RequestData> _requests = new();
 
         private static readonly Dictionary<Type, Func<object, object>> _formatters = new();
+
+        private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
+        {
+            Converters = { new JsonStringEnumConverter() }
+        };
 
         private static int _eventId = 1;
 
@@ -108,7 +114,7 @@ namespace MyProject.Infrastructure.Services
         private string SerializeObject(object obj)
         {
             var objToSerialize = GetFormatter(obj)(obj);
-            return JsonSerializer.Serialize(objToSerialize);
+            return JsonSerializer.Serialize(objToSerialize, _serializerOptions);
         }
 
         private ILogger CreateLogger(object request) => _factory.CreateLogger(request.GetType().Name);
