@@ -39,7 +39,7 @@ namespace MyProject.Infrastructure
             }
             else
             {
-                // TODO: Add services
+                services.AddSingleton<ICoreLogger, AzureTableStorageLogger>();
             }
             return services;
         }

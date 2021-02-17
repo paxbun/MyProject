@@ -22,3 +22,9 @@ Set-ProjectName "Project.Name";
 ## CORS
 
 * CorsOrigin: CORS를 허용할 Origin 이름 (맨 끝에 `/`를 달지 말아야 함)
+
+## Azure Blob Storage
+
+* StorageConnectionString: Azure Blob Storage Connection String
+* StorageLogTableNamePrefix: 로그를 저장할 Azure Table Storage 내 Table 이름 접두사
+* StorageLogQueueCount: 한번에 보낼 로그 개수
