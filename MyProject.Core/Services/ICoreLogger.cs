@@ -71,4 +71,13 @@ namespace MyProject.Core.Services
             return services;
         }
     }
+
+    /// <summary>
+    /// 로깅하지 않을 액션에 다는 attribute
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class DoNotLogAttribute : Attribute
+    {
+        public DoNotLogAttribute() { }
+    }
 }

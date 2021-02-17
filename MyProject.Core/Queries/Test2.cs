@@ -1,5 +1,5 @@
-﻿using MyProject.Core.ViewModels;
-using MyProject.Models;
+﻿using MyProject.Core.Services;
+using MyProject.Core.ViewModels;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace MyProject.Core.Queries
 {
     [For(AllowAnonymous = true)]
+    [DoNotLog]
     public class Test2Query : CoreRequest<Test2Error, Test2ResultView>
     {
         public int Argument1 { get; set; }
