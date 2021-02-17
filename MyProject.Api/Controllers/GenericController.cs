@@ -1,11 +1,11 @@
-﻿using MyProject.Core;
-using MyProject.Core.ViewModels;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using MyProject.Core;
+using MyProject.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

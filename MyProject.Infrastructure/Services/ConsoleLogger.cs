@@ -1,5 +1,5 @@
-﻿using MyProject.Core.Services;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using MyProject.Core.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
