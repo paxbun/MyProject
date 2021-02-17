@@ -28,7 +28,7 @@ namespace MyProject.Core.Behaviors
                 }
                 else
                 {
-                    if (!forAttribute.Types.Contains(identity.Type))
+                    if (!forAttribute.AllowAnonymous && !forAttribute.Types.Contains(identity.Type))
                         throw new AuthorizationFailedException();
                 }
                 return await next();
