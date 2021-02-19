@@ -68,7 +68,7 @@ namespace MyProject.Core.ViewModels
         public Page<TOther> Select<TOther>(Func<T, TOther> transformation)
             => new Page<TOther>
             {
-                Results = Results.Select(transformation).ToList(),
+                Results = Results?.Select(transformation).ToList(),
                 Count = Count,
                 BeginIdx = BeginIdx,
                 EndIdx = EndIdx
