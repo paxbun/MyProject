@@ -73,5 +73,21 @@ namespace MyProject.Core.ViewModels
                 BeginIdx = BeginIdx,
                 EndIdx = EndIdx
             };
+
+        public async Task<Page<TOther>> SelectAsync<TOther>(
+            Func<T, CancellationToken, Task<TOther>> transformation, CancellationToken cancellationToken = default)
+        {
+            List<TOther> newResults = new(Count);
+            foreach (var result in Results)
+                newResults.Add(await transformation(result, cancellationToken));
+
+            return new Page<TOther>
+            {
+                Results = newResults,
+                Count = Count,
+                BeginIdx = BeginIdx,
+                EndIdx = EndIdx
+            };
+        }
     }
 }
