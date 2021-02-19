@@ -159,7 +159,7 @@ namespace MyProject.Infrastructure.Services
             {
                 PartitionKey = data.Request.GetType().Name,
                 ETag = "*",
-                Request = SerializeObject(data.Request),
+                Request = SerializeObject(data.ObjectToLogInPlaceOfRequest ?? data.Request),
                 IntermediateErrors = data.Errors.Select(
                     error => new LogErrorItem
                     {
@@ -167,7 +167,7 @@ namespace MyProject.Infrastructure.Services
                         Exception = new LogExceptionItem(data.Request, error.Exception)
                     }).ToArray(),
                 Success = true,
-                Response = SerializeObject(response)
+                Response = SerializeObject(data.ObjectToLogInPlaceOfResponse ?? response)
             });
         }
 
@@ -177,7 +177,7 @@ namespace MyProject.Infrastructure.Services
             {
                 PartitionKey = data.Request.GetType().Name,
                 ETag = "*",
-                Request = SerializeObject(data.Request),
+                Request = SerializeObject(data.ObjectToLogInPlaceOfRequest ?? data.Request),
                 IntermediateErrors = data.Errors.Select(
                     error => new LogErrorItem
                     {

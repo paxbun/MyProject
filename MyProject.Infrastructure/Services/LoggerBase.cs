@@ -19,6 +19,8 @@ namespace MyProject.Infrastructure.Services
 
         protected class RequestData
         {
+            public object ObjectToLogInPlaceOfRequest { get; set; }
+            public object ObjectToLogInPlaceOfResponse { get; set; }
             public object Request { get; set; }
             public int EventId { get; set; }
             public List<IntermediateError> Errors { get; set; }
@@ -119,6 +121,29 @@ namespace MyProject.Infrastructure.Services
                         EventId = nextEventId,
                         Errors = new()
                     });
+                }
+            }, cancellationToken);
+        }
+
+
+        public async Task LogInPlaceOfRequestAsync(object request, object objectToLog, CancellationToken cancellationToken = default)
+        {
+            await Task.Run(() =>
+            {
+                lock (_requests)
+                {
+                    _requests[request].ObjectToLogInPlaceOfRequest = objectToLog;
+                }
+            }, cancellationToken);
+        }
+
+        public async Task LogInPlaceOfResponseAsync(object request, object objectToLog, CancellationToken cancellationToken = default)
+        {
+            await Task.Run(() =>
+            {
+                lock (_requests)
+                {
+                    _requests[request].ObjectToLogInPlaceOfResponse = objectToLog;
                 }
             }, cancellationToken);
         }

@@ -22,13 +22,16 @@ namespace MyProject.Infrastructure.Services
             var logger = CreateLogger(request);
             var eventId = data.EventId;
 
-            logger.LogInformation(eventId, "Request: {0}", SerializeObject(request));
+            logger.LogInformation(eventId, "Request: {0}", SerializeObject(
+                data.ObjectToLogInPlaceOfRequest ?? data.Request));
             foreach (var intermediateError in data.Errors)
             {
                 logger.LogWarning(eventId, "Exception: {0}", intermediateError.Exception);
                 logger.LogWarning(eventId, "Intermediate: {0}", intermediateError.Intermediate);
             }
-            logger.LogInformation(eventId, "Response: {0}", SerializeObject(response));
+            logger.LogInformation(
+                eventId, "Response: {0}",
+                SerializeObject(data.ObjectToLogInPlaceOfResponse ?? response));
 
         }
 
@@ -38,7 +41,8 @@ namespace MyProject.Infrastructure.Services
             var logger = CreateLogger(request);
             var eventId = data.EventId;
 
-            logger.LogInformation(eventId, "Request: {0}", SerializeObject(request));
+            logger.LogInformation(eventId, "Request: {0}", SerializeObject(
+                data.ObjectToLogInPlaceOfRequest ?? data.Request));
             foreach (var intermediateError in data.Errors)
             {
                 logger.LogWarning(eventId, "Exception: {0}", intermediateError.Exception);

@@ -17,6 +17,23 @@ namespace MyProject.Core.Services
         public Task TrackRequestAsync(object request, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// <c>request</c> 대신 로깅할 오브젝트를 지정합니다.
+        /// <c>objectToLog</c>에 해당하는 <c>ICoreLoggerFormatter</c>가 있다면 적용됩니다.
+        /// </summary>
+        /// <param name="request">액션</param>
+        /// <param name="objectToLog">로깅할 오브젝트</param>
+        public Task LogInPlaceOfRequestAsync(object request, object objectToLog, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// <c>response</c> 대신 로깅할 오브젝트를 지정합니다. 만약 <c>request</c>가 실패했다면
+        /// 이 오브젝트는 표시되지 않습니다.
+        /// <c>objectToLog</c>에 해당하는 <c>ICoreLoggerFormatter</c>가 있다면 적용됩니다.
+        /// </summary>
+        /// <param name="request">액션</param>
+        /// <param name="objectToLog">로깅할 오브젝트</param>
+        public Task LogInPlaceOfResponseAsync(object request, object objectToLog, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// 액션을 처리하던 도중, 전체적인 결과엔 영향을 주지는 않지만 기록해야하는 오류가 발생했다는 것을 알립니다.
         /// </summary>
         /// <param name="request">액션</param>
