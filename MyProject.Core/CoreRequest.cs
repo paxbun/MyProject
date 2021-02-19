@@ -240,7 +240,7 @@ namespace MyProject.Core
 
             var unknownErrorMember = enumType.GetMember("UnknownError")[0];
             var displayAttribute = Attribute.GetCustomAttribute(unknownErrorMember, typeof(DisplayAttribute));
-            if (displayAttribute != null)
+            if (displayAttribute is not null)
                 throw new Exception(
                     $"CoreRequest의 오류를 나타내는 자료형 {enumType.Name}의 UnknownError에 DisplayAttribute가 붙어있습니다.");
         }
@@ -250,7 +250,7 @@ namespace MyProject.Core
             var typename = structType.Name;
 
             var typeProperty = structType.GetProperty("Type");
-            if (typeProperty == null)
+            if (typeProperty is null)
                 throw new Exception(
                     $"CoreRequest의 오류를 나타내는 자료형 {typename}에 속성 Type이 존재하지 않습니다.");
 
@@ -262,7 +262,7 @@ namespace MyProject.Core
             CheckReqeustTypes(typePropertyType);
 
             var dataProperty = structType.GetProperty("Data");
-            if (dataProperty == null)
+            if (dataProperty is null)
                 throw new Exception(
                     $"CoreRequest의 오류를 나타내는 자료형 {typename}에 속성 Data가 존재하지 않습니다.");
 
@@ -309,7 +309,7 @@ namespace MyProject.Core
                         && i.GetGenericTypeDefinition() == genericInterface)
                     .FirstOrDefault();
 
-                if (@interface != null)
+                if (@interface is not null)
                 {
                     yield return new TypeInterfacePair
                     {

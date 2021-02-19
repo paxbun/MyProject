@@ -67,7 +67,7 @@ namespace MyProject.Core.Commands
         {
             var user = await _dbContext.Set<User>().FirstOrDefaultAsync(user => user.Username == request.Username, cancellationToken);
 
-            if (user == null)
+            if (user is null)
                 return request.MakeFailure();
 
             if (!user.VerifyPassword(request.Password))

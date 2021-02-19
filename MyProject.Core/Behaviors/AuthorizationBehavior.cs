@@ -17,11 +17,11 @@ namespace MyProject.Core.Behaviors
             {
                 var forAttribute = (ForAttribute)Attribute.GetCustomAttribute(
                     coreRequest.GetType(), typeof(ForAttribute));
-                if (forAttribute == null)
+                if (forAttribute is null)
                     throw new InvalidRequestTypeException();
 
                 var identity = coreRequest.Identity;
-                if (identity == null)
+                if (identity is null)
                 {
                     if (!forAttribute.AllowAnonymous)
                         throw new AuthorizationFailedException();

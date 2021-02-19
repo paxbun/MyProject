@@ -76,7 +76,7 @@ namespace MyProject.Infrastructure.Services
                     var interfaceType = typeof(ICoreLoggerFormatter<>).MakeGenericType(objType);
                     var implementaion = _provider.GetService(interfaceType);
 
-                    if (implementaion != null)
+                    if (implementaion is not null)
                     {
                         var implementationType = implementaion.GetType();
                         var param = Expression.Parameter(typeof(object));

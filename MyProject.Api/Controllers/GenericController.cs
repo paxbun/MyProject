@@ -79,7 +79,7 @@ namespace MyProject.Api.Controllers
 
                 var forAttribute = (ForAttribute)GetCustomAttribute(requestType, typeof(ForAttribute));
                 var actionModel = controllerModel.Actions.FirstOrDefault();
-                if (actionModel != null)
+                if (actionModel is not null)
                 {
                     var selector = actionModel.Selectors.FirstOrDefault();
                     if (forAttribute.Types.Any())

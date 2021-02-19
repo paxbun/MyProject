@@ -18,7 +18,7 @@ namespace MyProject.Core.Behaviors
         {
             if (request is ICoreRequestBase<TResponse> coreRequest)
             {
-                var doNotLog = Attribute.GetCustomAttribute(request.GetType(), typeof(DoNotLogAttribute), false) != null;
+                var doNotLog = Attribute.GetCustomAttribute(request.GetType(), typeof(DoNotLogAttribute), false) is not null;
                 if (doNotLog)
                 {
                     try

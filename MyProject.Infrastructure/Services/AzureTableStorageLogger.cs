@@ -133,7 +133,7 @@ namespace MyProject.Infrastructure.Services
 
                     {
                         var batchOperation = _batchOperations.GetValueOrDefault(logItem.PartitionKey);
-                        if (batchOperation == null)
+                        if (batchOperation is null)
                         {
                             batchOperation = new();
                             _batchOperations[logItem.PartitionKey] = batchOperation;

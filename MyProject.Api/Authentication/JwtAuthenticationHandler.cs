@@ -41,7 +41,7 @@ namespace MyProject.Api.Authentication
                 authorization = authorization[7..];
 
                 var identity = _identityService.ReadUserIdentity(authorization, TokenType.AccessToken);
-                if (identity == null)
+                if (identity is null)
                     return AuthenticateResult.Fail("No user identity given");
 
                 Request.HttpContext.Items[IdentityKey] = identity;
@@ -64,7 +64,7 @@ namespace MyProject.Api.Authentication
             var result = HandleAuthenticate();
             if (!result.Succeeded)
             {
-                if (Context.GetEndpoint()?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
+                if (Context.GetEndpoint()?.Metadata?.GetMetadata<IAllowAnonymous>() is not null)
                     result = AuthenticateResult.NoResult();
             }
             return Task.FromResult(result);
