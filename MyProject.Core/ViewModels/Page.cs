@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -63,5 +64,14 @@ namespace MyProject.Core.ViewModels
         /// 끝 인덱스
         /// </summary>
         public int? EndIdx { get; init; }
+
+        public Page<TOther> Select<TOther>(Func<T, TOther> transformation)
+            => new Page<TOther>
+            {
+                Results = Results.Select(transformation).ToList(),
+                Count = Count,
+                BeginIdx = BeginIdx,
+                EndIdx = EndIdx
+            };
     }
 }
