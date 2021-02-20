@@ -1,4 +1,6 @@
 ﻿using MyProject.Models;
+using System.Net;
+using System.Text.Json.Serialization;
 
 namespace MyProject.Core.ViewModels
 {
@@ -24,15 +26,20 @@ namespace MyProject.Core.ViewModels
         /// </summary>
         public UserType Type { get; set; }
 
-        public override string ToString() => $"{Type}({Id}, {Username}, {RealName})";
+        /// <summary>
+        /// 사용자 접속 IP
+        /// </summary>
+        [JsonIgnore]
+        public IPAddress Ip { get; set; }
 
-        public static UserIdentity FromUser(User user) =>
+        public static UserIdentity FromUser(User user, IPAddress ip) =>
             new UserIdentity
             {
                 Id = user.Id,
                 Username = user.Username,
                 RealName = user.RealName,
                 Type = user.Type,
+                Ip = ip
             };
     }
 }
