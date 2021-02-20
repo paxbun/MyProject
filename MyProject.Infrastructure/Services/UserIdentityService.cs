@@ -108,12 +108,23 @@ namespace MyProject.Infrastructure.Services
 
         public UserIdentity ReadUserIdentity(string token, TokenType type, IPAddress ip)
         {
-            var identity = FromClaims(
-                GetJwtGenerator(type).ParseJwt(
-                    token, _config[_issuerKey], _config[_audienceKey]));
+            IEnumerable<Claim> claims;
+            try
+            {
+                claims = GetJwtGenerator(type).ParseJwt(
+                        token, _config[_issuerKey], _config[_audienceKey]);
+            }
+            catch
+            {
+                throw new UserIdentityServiceException();
+            }
+
+            var identity = FromClaims(claims);
+            if (identity is null)
+                throw new UserIdentityServiceException();
 
             if (type == TokenType.AccessToken && !identity.Ip.Equals(ip))
-                return null;
+                throw new UserIdentityServiceException();
 
             return identity;
         }
