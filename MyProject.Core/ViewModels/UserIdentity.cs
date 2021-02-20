@@ -24,13 +24,13 @@ namespace MyProject.Core.ViewModels
         /// <summary>
         /// 사용자 종류
         /// </summary>
-        public UserType Type { get; set; }
+        public UserType Type { get; init; }
 
         /// <summary>
         /// 사용자 접속 IP
         /// </summary>
         [JsonIgnore]
-        public IPAddress Ip { get; set; }
+        public IPAddress Ip { get; init; }
 
         public static UserIdentity FromUser(User user, IPAddress ip) =>
             new UserIdentity
