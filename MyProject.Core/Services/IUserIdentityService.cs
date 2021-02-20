@@ -28,6 +28,7 @@ namespace MyProject.Core.Services
     {
         /// <summary>
         /// 주어진 token에서 사용자 로그인 정보를 읽습니다. token에 들어있는 IP 정보와 <c>ip</c>가 다르면 오류를 낼 수 있습니다.
+        /// <c>type</c>이 <c>RefreshToken</c>이면 <c>ip</c>를 무시합니다.
         /// </summary>
         /// <param name="token">토큰</param>
         /// <param name="type">토큰 종류</param>
