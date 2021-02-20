@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -20,7 +21,6 @@ namespace MyProject.Infrastructure.Services
             private readonly byte[] _tokenSecurityKey;
             private readonly SymmetricSecurityKey _securityKey;
             private readonly SigningCredentials _credentials;
-            private readonly TimeSpan _expiry;
 
             private static byte[] GenerateSecurityKey(int length)
             {
@@ -30,25 +30,34 @@ namespace MyProject.Infrastructure.Services
                 return rtn;
             }
 
-            public JwtGenerator(TimeSpan expiry)
+            public JwtGenerator()
             {
                 _tokenSecurityKey = GenerateSecurityKey(64);
                 _securityKey = new(_tokenSecurityKey);
                 _credentials = new(_securityKey, _algorithmName);
-                _expiry = expiry;
             }
 
             public string GenerateJwt(
-                Claim[] claims, string issuer, string audience)
+                Claim[] claims, string issuer, string audience, TimeSpan expiry)
             {
                 var token = new JwtSecurityToken(
                     issuer: issuer,
                     audience: audience,
                     claims: claims,
-                    expires: DateTime.Now + _expiry,
+                    expires: DateTime.UtcNow + expiry,
                     signingCredentials: _credentials);
 
                 return new JwtSecurityTokenHandler().WriteToken(token);
+            }
+
+            // https://stackoverflow.com/questions/39728519/jwtsecuritytoken-doesnt-expire-when-it-should
+            private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
+            {
+                if (expires != null)
+                {
+                    return expires > DateTime.UtcNow;
+                }
+                return false;
             }
 
             public IEnumerable<Claim> ParseJwt(
@@ -65,6 +74,7 @@ namespace MyProject.Infrastructure.Services
                         ValidAudience = audience,
                         ValidateLifetime = true,
                         RequireExpirationTime = true,
+                        LifetimeValidator = LifetimeValidator,
                         ValidAlgorithms = new[] { _algorithmName },
                     }, out SecurityToken token);
 
@@ -76,8 +86,8 @@ namespace MyProject.Infrastructure.Services
         private const string _issuerKey = "JwtIssuer";
         private const string _audienceKey = "JwtAudience";
 
-        private readonly static JwtGenerator refrechTokenGenerator = new(TimeSpan.FromDays(30));
-        private readonly static JwtGenerator accessTokenGenerator = new(TimeSpan.FromMinutes(20));
+        private readonly static JwtGenerator refrechTokenGenerator = new();
+        private readonly static JwtGenerator accessTokenGenerator = new();
 
         private readonly IConfiguration _config;
 
@@ -96,17 +106,31 @@ namespace MyProject.Infrastructure.Services
             _config = config;
         }
 
-        public UserIdentity ReadUserIdentity(string token, TokenType type)
+        public UserIdentity ReadUserIdentity(string token, TokenType type, IPAddress ip)
         {
-            return FromClaims(
+            var identity = FromClaims(
                 GetJwtGenerator(type).ParseJwt(
                     token, _config[_issuerKey], _config[_audienceKey]));
+
+            if (type == TokenType.AccessToken && !identity.Ip.Equals(ip))
+                return null;
+
+            return identity;
         }
 
         public string GenerateToken(UserIdentity identity, TokenType type)
         {
+            TimeSpan expiry = (identity.Type, type) switch
+            {
+                (UserType.General, TokenType.AccessToken) => TimeSpan.FromMinutes(20),
+                (UserType.General, TokenType.RefreshToken) => TimeSpan.FromDays(30),
+                (UserType.Administrator, TokenType.AccessToken) => TimeSpan.FromMinutes(5),
+                (UserType.Administrator, TokenType.RefreshToken) => TimeSpan.FromMinutes(20),
+                _ => TimeSpan.Zero
+            };
+
             return GetJwtGenerator(type).GenerateJwt(
-                ToClaims(identity), _config[_issuerKey], _config[_audienceKey]);
+                ToClaims(identity), _config[_issuerKey], _config[_audienceKey], expiry);
         }
 
         public Claim[] ToClaims(UserIdentity identity)
@@ -116,7 +140,8 @@ namespace MyProject.Infrastructure.Services
                 new("id", identity.Id.ToString()),
                 new("username", identity.Username),
                 new("realname", identity.RealName),
-                new("type", identity.Type.ToString())
+                new("type", identity.Type.ToString()),
+                new("ip", identity.Ip.ToString())
             };
         }
 
@@ -132,7 +157,9 @@ namespace MyProject.Infrastructure.Services
             var id = int.Parse(GetValue("id"));
             var username = GetValue("username");
             var realname = GetValue("realname");
-            if (!Enum.TryParse<UserType>(GetValue("type"), out UserType type))
+            if (!Enum.TryParse(GetValue("type"), out UserType type))
+                return null;
+            if (!IPAddress.TryParse(GetValue("ip"), out IPAddress ip))
                 return null;
 
             return new UserIdentity
@@ -141,6 +168,7 @@ namespace MyProject.Infrastructure.Services
                 Username = username,
                 RealName = realname,
                 Type = type,
+                Ip = ip
             };
         }
 

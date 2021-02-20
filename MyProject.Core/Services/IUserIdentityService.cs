@@ -1,5 +1,6 @@
 ﻿using MyProject.Core.ViewModels;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 
 namespace MyProject.Core.Services
@@ -23,8 +24,9 @@ namespace MyProject.Core.Services
         /// </summary>
         /// <param name="token">토큰</param>
         /// <param name="type">토큰 종류</param>
+        /// <param name="ip">접속 IP</param>
         /// <returns>사용자 정보 객체</returns>
-        public UserIdentity ReadUserIdentity(string token, TokenType type);
+        public UserIdentity ReadUserIdentity(string token, TokenType type, IPAddress ip);
 
         /// <summary>
         /// 주어진 사용자 정보에서 token을 생성합니다.

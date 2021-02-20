@@ -40,7 +40,8 @@ namespace MyProject.Api.Authentication
                     return AuthenticateResult.Fail("No user identity given");
                 authorization = authorization[7..];
 
-                var identity = _identityService.ReadUserIdentity(authorization, TokenType.AccessToken);
+                var ip = Context.Connection.RemoteIpAddress;
+                var identity = _identityService.ReadUserIdentity(authorization, TokenType.AccessToken, ip);
                 if (identity is null)
                     return AuthenticateResult.Fail("No user identity given");
 
