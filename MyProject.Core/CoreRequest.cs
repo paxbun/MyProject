@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿#nullable enable
+
 using MyProject.Core.ViewModels;
 using MyProject.Models;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace MyProject.Core
         /// <summary>
         /// 현재 로그인 중인 사용자 정보
         /// </summary>
-        public UserIdentity Identity { get; set; }
+        public UserIdentity? Identity { get; set; }
     }
 
     public interface ICoreRequestBase<TResult> : ICoreRequestBase, IRequest<TResult>
@@ -33,9 +35,9 @@ namespace MyProject.Core
         where TError : struct
         where TResultData : class
     {
-        public UserIdentity Identity { get; set; }
+        public UserIdentity? Identity { get; set; }
 
-        public Result<TError, TResultData> MakeSuccess(TResultData data = default) => Result<TError, TResultData>.MakeSuccess(data);
+        public Result<TError, TResultData> MakeSuccess(TResultData? data = default) => Result<TError, TResultData>.MakeSuccess(data);
 
         public Result<TError, TResultData> MakeFailure(TError error = default) => Result<TError, TResultData>.MakeFailure(error);
 
@@ -61,20 +63,20 @@ namespace MyProject.Core
         where TError : struct
         where TResultData : class
     {
-        public UserIdentity Identity { get; set; }
+        public UserIdentity? Identity { get; set; }
 
         public List<Result<TError, TResultData>> MakeResultList() => new();
 
         public List<Result<TError, TAnotherResultData>> MakeResultList<TAnotherResultData>()
             where TAnotherResultData : class => new();
 
-        public BatchResult<TBatchError, TError, TResultData> MakeBatchSuccess(IEnumerable<Result<TError, TResultData>> enumerable = default)
+        public BatchResult<TBatchError, TError, TResultData> MakeBatchSuccess(IEnumerable<Result<TError, TResultData>>? enumerable = default)
         {
             return BatchResult<TBatchError, TError, TResultData>.MakeSuccess(enumerable);
         }
 
         public BatchResult<TBatchError, TError, TAnotherResultData> MakeBatchSuccess<TAnotherResultData>(
-            IEnumerable<Result<TError, TAnotherResultData>> enumerable = default)
+            IEnumerable<Result<TError, TAnotherResultData>>? enumerable = default)
             where TAnotherResultData : class
         {
             return BatchResult<TBatchError, TError, TAnotherResultData>.MakeSuccess(enumerable);
@@ -85,7 +87,7 @@ namespace MyProject.Core
             return BatchResult<TBatchError, TError, TResultData>.MakeFailure(error);
         }
 
-        public Result<TError, TResultData> MakeSuccess(TResultData data = default) => Result<TError, TResultData>.MakeSuccess(data);
+        public Result<TError, TResultData> MakeSuccess(TResultData? data = default) => Result<TError, TResultData>.MakeSuccess(data);
 
         public Result<TError, TResultData> MakeFailure(TError error = default) => Result<TError, TResultData>.MakeFailure(error);
 
@@ -108,7 +110,7 @@ namespace MyProject.Core
         : ICoreRequestBase<Result<TError>>
         where TError : struct
     {
-        public UserIdentity Identity { get; set; }
+        public UserIdentity? Identity { get; set; }
 
         public Result<TError> MakeSuccess() => Result<TError>.MakeSuccess();
 
@@ -133,11 +135,11 @@ namespace MyProject.Core
         where TBatchError : struct
         where TError : struct
     {
-        public UserIdentity Identity { get; set; }
+        public UserIdentity? Identity { get; set; }
 
         public List<Result<TError>> MakeResultList() => new();
 
-        public BatchResult<TBatchError, TError> MakeBatchSuccess(IEnumerable<Result<TError>> enumerable = default)
+        public BatchResult<TBatchError, TError> MakeBatchSuccess(IEnumerable<Result<TError>>? enumerable = default)
         {
             return BatchResult<TBatchError, TError>.MakeSuccess(enumerable);
         }
@@ -169,9 +171,9 @@ namespace MyProject.Core
         : ICoreRequestBase<DataResult<TResultData>>
         where TResultData : class
     {
-        public UserIdentity Identity { get; set; }
+        public UserIdentity? Identity { get; set; }
 
-        public DataResult<TResultData> MakeSuccess(TResultData data = default) => DataResult<TResultData>.MakeSuccess(data);
+        public DataResult<TResultData> MakeSuccess(TResultData? data = default) => DataResult<TResultData>.MakeSuccess(data);
 
         public DataResult<TResultData> MakeFailure() => DataResult<TResultData>.MakeFailure();
 
@@ -194,20 +196,20 @@ namespace MyProject.Core
         where TBatchError : struct
         where TResultData : class
     {
-        public UserIdentity Identity { get; set; }
+        public UserIdentity? Identity { get; set; }
 
         public List<DataResult<TResultData>> MakeResultList() => new();
 
         public List<DataResult<TAnotherResultData>> MakeResultList<TAnotherResultData>()
             where TAnotherResultData : class => new();
 
-        public BatchDataResult<TBatchError, TResultData> MakeBatchSuccess(IEnumerable<DataResult<TResultData>> enumerable = default)
+        public BatchDataResult<TBatchError, TResultData> MakeBatchSuccess(IEnumerable<DataResult<TResultData>>? enumerable = default)
         {
             return BatchDataResult<TBatchError, TResultData>.MakeSuccess(enumerable);
         }
 
         public BatchDataResult<TBatchError, TAnotherResultData> MakeBatchSuccess<TAnotherResultData>(
-            IEnumerable<DataResult<TAnotherResultData>> enumerable = default)
+            IEnumerable<DataResult<TAnotherResultData>>? enumerable = default)
             where TAnotherResultData : class
         {
             return BatchDataResult<TBatchError, TAnotherResultData>.MakeSuccess(enumerable);
@@ -218,7 +220,7 @@ namespace MyProject.Core
             return BatchDataResult<TBatchError, TResultData>.MakeFailure(error);
         }
 
-        public DataResult<TResultData> MakeSuccess(TResultData data = default) => DataResult<TResultData>.MakeSuccess(data);
+        public DataResult<TResultData> MakeSuccess(TResultData? data = default) => DataResult<TResultData>.MakeSuccess(data);
 
         public DataResult<TResultData> MakeFailure() => DataResult<TResultData>.MakeFailure();
 
@@ -249,7 +251,7 @@ namespace MyProject.Core
         private static void CheckReqeustTypes(Type enumType)
         {
             int unknownErrorValue;
-            if (Enum.TryParse(enumType, "UnknownError", out object outValue))
+            if (Enum.TryParse(enumType, "UnknownError", out object? outValue))
                 unknownErrorValue = (int)outValue;
             else
                 unknownErrorValue = -1;
@@ -375,7 +377,7 @@ namespace MyProject.Core
         /// 사용자가 사용 중인 시스템의 언어-국가 코드입니다. <c>Locale</c>이 <c>null</c>이면
         /// 기본 메시지로 사용됩니다.
         /// </summary>
-        public string Locale { get; set; }
+        public string? Locale { get; set; }
 
         public DisplayAttribute(string content) => Content = content;
     }

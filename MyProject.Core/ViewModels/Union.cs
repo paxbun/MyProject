@@ -1,4 +1,4 @@
-﻿namespace Mathod.V2.Core.ViewModels
+﻿namespace MyProject.Core.ViewModels
 {
     /// <summary>
     /// 공용체 지원을 위한 타입
