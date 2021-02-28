@@ -67,8 +67,13 @@ namespace MyProject.Core
 
         public List<Result<TError, TResultData>> MakeResultList() => new();
 
+        public List<Result<TError, TResultData>> MakeResultList(int capacity) => new(capacity);
+
         public List<Result<TError, TAnotherResultData>> MakeResultList<TAnotherResultData>()
             where TAnotherResultData : class => new();
+
+        public List<Result<TError, TAnotherResultData>> MakeResultList<TAnotherResultData>(int capacity)
+            where TAnotherResultData : class => new(capacity);
 
         public BatchResult<TBatchError, TError, TResultData> MakeBatchSuccess(IEnumerable<Result<TError, TResultData>>? enumerable = default)
         {
@@ -139,6 +144,8 @@ namespace MyProject.Core
 
         public List<Result<TError>> MakeResultList() => new();
 
+        public List<Result<TError>> MakeResultList(int capacity) => new(capacity);
+
         public BatchResult<TBatchError, TError> MakeBatchSuccess(IEnumerable<Result<TError>>? enumerable = default)
         {
             return BatchResult<TBatchError, TError>.MakeSuccess(enumerable);
@@ -200,8 +207,13 @@ namespace MyProject.Core
 
         public List<DataResult<TResultData>> MakeResultList() => new();
 
+        public List<DataResult<TResultData>> MakeResultList(int capacity) => new(capacity);
+
         public List<DataResult<TAnotherResultData>> MakeResultList<TAnotherResultData>()
             where TAnotherResultData : class => new();
+
+        public List<DataResult<TAnotherResultData>> MakeResultList<TAnotherResultData>(int capacity)
+            where TAnotherResultData : class => new(capacity);
 
         public BatchDataResult<TBatchError, TResultData> MakeBatchSuccess(IEnumerable<DataResult<TResultData>>? enumerable = default)
         {
@@ -252,7 +264,9 @@ namespace MyProject.Core
         {
             int unknownErrorValue;
             if (Enum.TryParse(enumType, "UnknownError", out object? outValue))
+#pragma warning disable CS8605 // Unboxing a possibly null value.
                 unknownErrorValue = (int)outValue;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
             else
                 unknownErrorValue = -1;
 
