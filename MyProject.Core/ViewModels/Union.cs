@@ -3,6 +3,15 @@
     /// <summary>
     /// 공용체 지원을 위한 타입
     /// </summary>
+    public record Union<T1>(string Type, object Data)
+    {
+        public static implicit operator Union<T1>(T1 t1)
+            => new Union<T1>(typeof(T1).Name, t1);
+    }
+
+    /// <summary>
+    /// 공용체 지원을 위한 타입
+    /// </summary>
     public record Union<T1, T2>(string Type, object Data)
     {
         public static implicit operator Union<T1, T2>(T1 t1)
