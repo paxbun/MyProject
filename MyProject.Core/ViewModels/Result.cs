@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MyProject.Core.ViewModels
 {
@@ -16,6 +18,26 @@ namespace MyProject.Core.ViewModels
         /// 성공 여부
         /// </summary>
         public bool Success { get; init; }
+    }
+
+    /// <summary>
+    /// 값 타입을 <c>Result</c>에 넣기 위한 클래스
+    /// </summary>
+    /// <remarks>TODO: 제대로 된 방법인지 재검토할 것</remarks>
+    public class Reference<T>
+        where T : struct
+    {
+        public T Value { get; set; }
+
+        public static implicit operator Reference<T>(T value)
+        {
+            return new Reference<T> { Value = value };
+        }
+
+        public static implicit operator T(Reference<T> reference)
+        {
+            return reference.Value;
+        }
     }
 
     /// <summary>
@@ -57,6 +79,32 @@ namespace MyProject.Core.ViewModels
                     Success = true,
                     Error = null,
                     Data = func?.Invoke(Data)
+                };
+            }
+            else
+            {
+                return new Result<TError, TAnotherResultData>
+                {
+                    Success = false,
+                    Error = Error
+                };
+            }
+        }
+
+        public async Task<Result<TError, TAnotherResultData>> SelectAsync<TAnotherResultData>(
+            Func<TResultData?, CancellationToken, Task<TAnotherResultData?>>? func = default,
+            CancellationToken cancellationToken = default)
+            where TAnotherResultData : class
+        {
+            if (Success)
+            {
+                var data = await (func?.Invoke(Data, cancellationToken)
+                    ?? Task.FromResult<TAnotherResultData?>(null));
+                return new Result<TError, TAnotherResultData>
+                {
+                    Success = true,
+                    Error = null,
+                    Data = data
                 };
             }
             else
@@ -127,6 +175,37 @@ namespace MyProject.Core.ViewModels
                 {
                     Success = true,
                     _results = _results.Select(result => result.Select(func)).ToArray()
+                };
+            }
+            else
+            {
+                return new BatchResult<TBatchError, TError, TAnotherResultData>
+                {
+                    Success = false,
+                    Error = Error,
+                    _results = Array.Empty<Result<TError, TAnotherResultData>>()
+                };
+            }
+        }
+
+        public async Task<BatchResult<TBatchError, TError, TAnotherResultData>>
+            SelectAsync<TAnotherResultData>(
+                Func<TResultData?, CancellationToken, Task<TAnotherResultData?>>? func = default,
+                CancellationToken cancellationToken = default)
+            where TAnotherResultData : class
+        {
+            if (Success)
+            {
+                var newResults = new Result<TError, TAnotherResultData>[_results.Length];
+                for (int i = 0; i < newResults.Length; ++i)
+                {
+                    newResults[i] = await _results[i].SelectAsync(func, cancellationToken);
+                }
+
+                return new BatchResult<TBatchError, TError, TAnotherResultData>
+                {
+                    Success = true,
+                    _results = newResults
                 };
             }
             else
@@ -271,6 +350,30 @@ namespace MyProject.Core.ViewModels
             }
         }
 
+        public async Task<DataResult<TAnotherResultData>> SelectAsync<TAnotherResultData>(
+            Func<TResultData?, CancellationToken, Task<TAnotherResultData?>>? func = default,
+            CancellationToken cancellationToken = default)
+            where TAnotherResultData : class
+        {
+            if (Success)
+            {
+                var data = await (func?.Invoke(Data, cancellationToken)
+                    ?? Task.FromResult<TAnotherResultData?>(null));
+                return new DataResult<TAnotherResultData>
+                {
+                    Success = true,
+                    Data = data
+                };
+            }
+            else
+            {
+                return new DataResult<TAnotherResultData>
+                {
+                    Success = false,
+                };
+            }
+        }
+
         /// <summary>
         /// 성공 여부
         /// </summary>
@@ -322,6 +425,37 @@ namespace MyProject.Core.ViewModels
                 {
                     Success = true,
                     _results = _results.Select(DataResult => DataResult.Select(func)).ToArray()
+                };
+            }
+            else
+            {
+                return new BatchDataResult<TBatchError, TAnotherResultData>
+                {
+                    Success = false,
+                    Error = Error,
+                    _results = Array.Empty<DataResult<TAnotherResultData>>()
+                };
+            }
+        }
+
+        public async Task<BatchDataResult<TBatchError, TAnotherResultData>>
+            SelectAsync<TAnotherResultData>(
+                Func<TResultData?, CancellationToken, Task<TAnotherResultData?>>? func = default,
+                CancellationToken cancellationToken = default)
+            where TAnotherResultData : class
+        {
+            if (Success)
+            {
+                var newResults = new DataResult<TAnotherResultData>[_results.Length];
+                for (int i = 0; i < newResults.Length; ++i)
+                {
+                    newResults[i] = await _results[i].SelectAsync(func, cancellationToken);
+                }
+
+                return new BatchDataResult<TBatchError, TAnotherResultData>
+                {
+                    Success = true,
+                    _results = newResults
                 };
             }
             else
