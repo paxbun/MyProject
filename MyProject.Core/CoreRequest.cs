@@ -65,9 +65,19 @@ namespace MyProject.Core
 
         public List<Result<TError, TResultData>> MakeResultList() => new();
 
+        public List<Result<TError, TAnotherResultData>> MakeResultList<TAnotherResultData>()
+            where TAnotherResultData : class => new();
+
         public BatchResult<TBatchError, TError, TResultData> MakeBatchSuccess(IEnumerable<Result<TError, TResultData>> enumerable = default)
         {
             return BatchResult<TBatchError, TError, TResultData>.MakeSuccess(enumerable);
+        }
+
+        public BatchResult<TBatchError, TError, TAnotherResultData> MakeBatchSuccess<TAnotherResultData>(
+            IEnumerable<Result<TError, TAnotherResultData>> enumerable = default)
+            where TAnotherResultData : class
+        {
+            return BatchResult<TBatchError, TError, TAnotherResultData>.MakeSuccess(enumerable);
         }
 
         public BatchResult<TBatchError, TError, TResultData> MakeBatchFailure(TBatchError error = default)
@@ -188,9 +198,19 @@ namespace MyProject.Core
 
         public List<DataResult<TResultData>> MakeResultList() => new();
 
+        public List<DataResult<TAnotherResultData>> MakeResultList<TAnotherResultData>()
+            where TAnotherResultData : class => new();
+
         public BatchDataResult<TBatchError, TResultData> MakeBatchSuccess(IEnumerable<DataResult<TResultData>> enumerable = default)
         {
             return BatchDataResult<TBatchError, TResultData>.MakeSuccess(enumerable);
+        }
+
+        public BatchDataResult<TBatchError, TAnotherResultData> MakeBatchSuccess<TAnotherResultData>(
+            IEnumerable<DataResult<TAnotherResultData>> enumerable = default)
+            where TAnotherResultData : class
+        {
+            return BatchDataResult<TBatchError, TAnotherResultData>.MakeSuccess(enumerable);
         }
 
         public BatchDataResult<TBatchError, TResultData> MakeBatchFailure(TBatchError error = default)
