@@ -33,7 +33,8 @@ namespace MyProject.Api
                 options.AddPolicy(name: _myAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins(_configuration["CorsOrigin"])
+                        var origins = _configuration["CorsOrigin"].Split(',');
+                        builder.WithOrigins(origins)
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
