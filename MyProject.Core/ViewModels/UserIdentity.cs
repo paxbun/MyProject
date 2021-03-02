@@ -1,8 +1,5 @@
 ﻿using MyProject.Models;
-using System;
 using System.Net;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace MyProject.Core.ViewModels
 {
@@ -31,7 +28,6 @@ namespace MyProject.Core.ViewModels
         /// <summary>
         /// 사용자 접속 IP
         /// </summary>
-        [JsonConverter(typeof(IPAddressConverter))]
         public IPAddress Ip { get; init; }
 
         public static UserIdentity FromUser(User user, IPAddress ip) =>
@@ -43,14 +39,5 @@ namespace MyProject.Core.ViewModels
                 Type = user.Type,
                 Ip = ip
             };
-    }
-
-    public class IPAddressConverter : JsonConverter<IPAddress>
-    {
-        public override IPAddress Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            => IPAddress.Parse(reader.GetString());
-
-        public override void Write(Utf8JsonWriter writer, IPAddress value, JsonSerializerOptions options)
-            => writer.WriteStringValue(value.ToString());
     }
 }

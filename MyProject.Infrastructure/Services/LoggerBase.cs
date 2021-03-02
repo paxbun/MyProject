@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -9,6 +10,15 @@ using System.Threading.Tasks;
 
 namespace MyProject.Infrastructure.Services
 {
+    public class IPAddressConverter : JsonConverter<IPAddress>
+    {
+        public override IPAddress Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            => IPAddress.Parse(reader.GetString());
+
+        public override void Write(Utf8JsonWriter writer, IPAddress value, JsonSerializerOptions options)
+            => writer.WriteStringValue(value.ToString());
+    }
+
     public abstract class LoggerBase : ICoreLogger
     {
         protected struct IntermediateError
@@ -36,7 +46,10 @@ namespace MyProject.Infrastructure.Services
 
         protected static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
         {
-            Converters = { new JsonStringEnumConverter() }
+            Converters = {
+                new JsonStringEnumConverter(),
+                new IPAddressConverter(),
+            }
         };
 
         private static int _eventId = 1;
