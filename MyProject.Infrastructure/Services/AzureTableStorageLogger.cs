@@ -24,12 +24,14 @@ namespace MyProject.Infrastructure.Services
                 var match = stackTraceRegex.Match(ex.StackTrace);
 
                 Name = ex.GetType().Name;
+                Message = ex.Message;
                 Method = match.Groups[1].Value;
                 Filename = match.Groups[2].Value;
                 Line = int.Parse(match.Groups[3].Value);
             }
 
             public string Name { get; set; }
+            public string Message { get; set; }
             public string Method { get; set; }
             public string Filename { get; set; }
             public int Line { get; set; }
